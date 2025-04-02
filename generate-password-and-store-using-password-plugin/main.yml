@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  vars_files: 
+    - users.yml
+  tasks: 
+  - ansible.builtin.user: 
+      name: "{{ item['name'] }}"
+      uid: "{{ item['uid'] }}"
+      comment: "{{ item.first | capitalize }} {{ item.middle | capitalize }} {{ item.last | capitalize }}"
+      password: "{{ lookup('ansible.builtin.password', 'password-' + item['name'], encrypt='sha512_crypt') }}"
+      state: present 
+    loop: "{{ users }}"
